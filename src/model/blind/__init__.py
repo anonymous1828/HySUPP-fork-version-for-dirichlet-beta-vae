@@ -9,3 +9,4 @@ from .CNNAEU import CNNAEU
 from .PGMSU import PGMSU
 from .MSNet import MSNet
 from .ADMMNet import ADMMNet
+from .DirVAE import DirVAE
