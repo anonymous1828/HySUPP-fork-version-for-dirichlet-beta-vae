@@ -141,7 +141,7 @@ class ADMMNet(nn.Module, BlindUnmixingModel):
         output = self.decoder(abund)
         return abund, output
 
-    def compute_endmembers_and_abundances(self, Y, p, *args, **kwargs):
+    def compute_endmembers_and_abundances(self, Y, p, seed=0, *args, **kwargs):
 
         tic = time.time()
         logger.debug("Solving started...")
@@ -154,7 +154,7 @@ class ADMMNet(nn.Module, BlindUnmixingModel):
 
         # endmembers initialization
         extractor = VCA()
-        Ehat = extractor.extract_endmembers(Y, p)
+        Ehat = extractor.extract_endmembers(Y, p, seed=seed)
         A_init = torch.Tensor(Ehat)
         self.init_architecture(A_init=A_init)
 

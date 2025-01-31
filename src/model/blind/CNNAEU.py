@@ -12,6 +12,7 @@ import torch.nn.functional as F
 from sklearn.feature_extraction.image import extract_patches_2d
 
 from .base import BlindUnmixingModel
+from src.utils.tf_rms_prop import RMSpropTF
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
@@ -123,7 +124,8 @@ class CNNAEU(nn.Module, BlindUnmixingModel):
 
         # Send model to GPU
         self = self.to(self.device)
-        optimizer = torch.optim.RMSprop(self.parameters(), lr=self.lr)
+        #optimizer = torch.optim.RMSprop(self.parameters(), lr=self.lr)
+        optimizer = RMSpropTF(self.parameters(), lr=self.lr)
 
         # Dataloader
         dataloader = torch.utils.data.DataLoader(
