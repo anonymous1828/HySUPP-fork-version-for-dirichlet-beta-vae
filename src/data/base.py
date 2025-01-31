@@ -244,9 +244,29 @@ class RealHSI(HSI):
         self.p = p
         # Create labels
         self.labels = [f"#{ii}" for ii in range(self.p)]
+        
+        if self.has_GT():
+            # Sanity check on ground truth
+            assert self.E.shape == (self.L, self.p)
+            assert self.A.shape == (self.p, self.N)
 
     def has_GT(self):
-        return False
+        if   "Samson"   in self.name: return True
+        elif "Urban"    in self.name: return True
+        else:
+            return False
+
+    def get_GT(self):
+        if "Samson" in self.name:
+            return (
+                self.E,
+                self.A,
+            )
+        if "Urban" in self.name:
+            return (
+                self.E,
+                self.A,
+            )
 
 
 @dataclass
