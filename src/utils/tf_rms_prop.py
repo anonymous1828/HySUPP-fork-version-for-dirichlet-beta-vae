@@ -5,7 +5,7 @@ from torch.optim.optimizer import (Optimizer, _default_to_fused_or_foreach, _use
 from typing import List, Optional
 from torch.utils._foreach_utils import _group_tensors_by_device_and_dtype
 
-__all__ = ["CustomRMSprop", "customrmsprop"]
+__all__ = ["RMSpropTF", "rmsproptf"]
 
 
 class RMSpropTF(Optimizer):
@@ -62,7 +62,7 @@ class RMSpropTF(Optimizer):
             params_with_grad.append(p)
 
             if p.grad.is_sparse:
-                raise RuntimeError("CustomRMSprop does not support sparse gradients")
+                raise RuntimeError("RMSpropTF does not support sparse gradients")
             grads.append(p.grad)
 
             state = self.state[p]
@@ -135,7 +135,7 @@ class RMSpropTF(Optimizer):
         return loss
 
 
-CustomRMSprop.__doc__ = r"""Implements RMSprop algorithm.
+RMSpropTF.__doc__ = r"""Implements RMSprop Tensforflow version algorithm.
 
     .. math::
        \begin{aligned}
@@ -158,11 +158,11 @@ CustomRMSprop.__doc__ = r"""Implements RMSprop algorithm.
             &\hspace{10mm} \tilde{v_t} \leftarrow \tilde{v_t} -  \big(g^{ave}_{t} \big)^2        \\
             &\hspace{5mm}if \: \mu > 0                                                           \\
             &\hspace{10mm} \textbf{b}_t\leftarrow \mu \textbf{b}_{t-1} +
-                g_t/ \big(\sqrt{\tilde{v_t}} +  \epsilon \big)                                   \\
+                g_t/ \big(\sqrt{\tilde{v_t} + \epsilon} \big)                                    \\
             &\hspace{10mm} \theta_t \leftarrow \theta_{t-1} - \gamma \textbf{b}_t                \\
             &\hspace{5mm} else                                                                   \\
             &\hspace{10mm}\theta_t      \leftarrow   \theta_{t-1} -
-                \gamma  g_t/ \big(\sqrt{\tilde{v_t}} + \epsilon \big)  \hspace{3mm}              \\
+                \gamma  g_t/ \big(\sqrt{\tilde{v_t} + \epsilon} + \big)  \hspace{3mm}            \\
             &\rule{110mm}{0.4pt}                                                          \\[-1.ex]
             &\bf{return} \:  \theta_t                                                     \\[-1.ex]
             &\rule{110mm}{0.4pt}                                                          \\[-1.ex]
