@@ -33,7 +33,8 @@ def main(ctx: mlxp.Context) -> None:
     # Normalize HSI
     # Y = (Y - Y.min()) / (Y.max() - Y.min())
     # Apply noise
-    Y = noise.apply(Y)
+    if "Urban" or "Samson" not in hsi.name:
+        Y = noise.apply(Y)
     # L2 normalization
     if cfg.l2_normalization:
         normY = np.linalg.norm(Y, axis=0, ord=2, keepdims=True)
@@ -49,6 +50,7 @@ def main(ctx: mlxp.Context) -> None:
         p,
         H=H,
         W=W,
+        seed=cfg.seed
     )
 
     logger.log_artifact(Estimate(E_hat, A_hat, H, W), "estimates")
