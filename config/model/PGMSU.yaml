@@ -6,5 +6,4 @@ epochs: 200
 lambda_kl: 0.1
 lambda_sad: 0
 lambda_vol: 0.5
-mode: blind
 

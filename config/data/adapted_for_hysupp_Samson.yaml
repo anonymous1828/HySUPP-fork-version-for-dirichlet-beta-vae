@@ -1,0 +1,5 @@
+name: src.data.base.RealHSI
+dataset: "adapted_for_hysupp_Samson"
+p: 3
+data_dir: ${DATA_dir}
+figs_dir: ${FIGS_dir}

@@ -1,0 +1,5 @@
+name: src.data.base.RealHSI
+dataset: "adapted_for_hysupp_Urban6"
+p: 6
+data_dir: ${DATA_dir}
+figs_dir: ${FIGS_dir}

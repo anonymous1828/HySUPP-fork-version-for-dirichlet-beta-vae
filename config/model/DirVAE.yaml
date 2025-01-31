@@ -1,0 +1,7 @@
+# _target_: src.model.blind.DirVAE
+name: src.model.blind.DirVAE
+epochs: 200
+lr: 0.001
+batch_size: 200
+beta: 1.0
+reg_factor: 0.01
