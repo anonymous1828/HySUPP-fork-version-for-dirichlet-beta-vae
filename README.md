@@ -21,33 +21,30 @@ We recommend using a `conda` virtual Python environment to install HySUPP.
 In the following steps we will use `conda` to handle the Python distribution and `pip` to install the required Python packages.
 If you do not have `conda`, please install it using [Miniconda](https://docs.conda.io/en/latest/miniconda.html).
 
-```
+```shell
 conda create --name hysupp python=3.10
 ```
 
 Activate the new `conda` environment to install the Python packages.
 
-```
+```shell
 conda activate hysupp
 ```
 
 Clone the Github repository.
 
-```
+```shell
 git clone https://github.com/anonymous1828/HySUPP-fork-version-for-dirichlet-beta-vae.git
 ```
 
 Change directory and install the required Python packages.
 
-```
+```shell
 cd HySUPP && pip install -r requirements.txt
 ```
 
-If you encounter any issue when installing `spams`, we recommend reading the Installation section [here](https://pypi.org/project/spams/).
-For windows users, we suggest removing line 10 in the requirements.txt (spams==2.6.5.4), and after installing the requirements, install spams using pip install spams-bin.
-
-Another simple workaround consists in running the following commands:
-```
+Then install `spams`:
+```shell
 git clone https://github.com/getspams/spams-python
 cd spams-python
 pip install -e .
@@ -55,7 +52,13 @@ pip install -e .
 
 ### Download Datasets
 
-For this submission, we worked with Samson and Urban datasets. Samson is available directly and can be used under the name of "adapted_for_hysupp_Samson" as shown previously. 
+For this submission, we worked with Samson and Urban datasets. 
+
+Samson files are already downloaded and stored in `data/Samson` directory. However it needs to be adapted to fit the layout requirements of HySUPP (see data format). Therefore, one must run the following command line:
+```shell
+python utils/adapt_data_for_hysupp.py --name_origin_data Samson
+```  
+
 Urban is too heavy to be stored on Github. To obtain it follow those steps
 1) download the dataset 
    - observations https://rslab.ut.ac.ir/documents/437291/1493656/Urban_R162.mat/24b3640f-ea17-a8cc-6e09-9b2ff22bf8c3?t=1710110006859&download=true
@@ -64,7 +67,7 @@ Urban is too heavy to be stored on Github. To obtain it follow those steps
    - 6 endmembers : https://rslab.ut.ac.ir/documents/437291/1493656/groundTruth_Urban_end6.zip/4ae2518a-298b-bdd2-0e28-8ee60c8e3ef1?t=1710109871882&download=true
 2) Create a directory in ./data/ named Urban*k* where *k* is the number of endmembers (Urban4 for instance) and place the Urban_R162.mat and the groundTruth_Urban_end*k*.zip (for Urban4, your directory must contain Urban_R162.mat and groundTruth_Urban_end4.zip)
 3) unzip groundTruth_Urban_end*k*.zip and drag the content in ./data/Urban*k* (for instance your Urban4 must now contain Urban_R162.mat, groundTruth_Urban_end4.zip and end4_groundTruth.mat)
-4) in the terminal, place yourself in the project root directory and run the following command ``` python utils/adapt_data.py --name_origin_data Urban*k* ``` (for instance for Urban4 run ``` python utils/adapt_data.py --name_origin_data Urban4 ```)
+4) in the terminal, place yourself in the project root directory and run the following command ``` python utils/adapt_data_for_hysupp.py --name_origin_data Urban*k* ``` (for instance for Urban4 run ``` python utils/adapt_data_for_hysupp.py --name_origin_data Urban4 ```)
 
 If it executes well, a new file should appear in the data directory named adapted_for_hysupp_Urban*k*.mat (for Urban4 you should now see adapted_for_hysupp_Urban4.mat)
 
@@ -77,14 +80,20 @@ There are a few required parameters to define in order to run an experiment:
 * `data`: hyperspectral unmixing dataset
 * `model`: unmixing model
 * `SNR`: input SNR (*optional*)
-* `mode`: unmixing mode (no longer needed!)
+* `mode`: unmixing mode 
 
-The Dirichlet $\beta$-VAE. To run it, you can use the following line or modify the config file DirVAE.yaml to set default hyperparameters
+The Dirichlet $\beta$-VAE. To run it on Samson, you can use the following line or modify the config file DirVAE.yaml to set default hyperparameters
 
 ```shell
-python unmixing.py data=adapted_for_hysupp_Samson model=DirVAE model.epochs=200 model.lr=0.001 model.reg_factor=0.001
+python unmixing.py mode=blind data=adapted_for_hysupp_Samson model=DirVAE model.epochs=200 model.lr=0.001 model.reg_factor=0.001
 ```
 The results of the experiment can be found in the logs directory located at ```./logs\```. To facilitate its access, we propose a demo.ipynb file where one can access the selected log_id and display the metrics.
+
+To run it on Urban*k*, you can use the following line with replacing *k* by 4, 5 or 6 
+
+```shell
+python unmixing.py mode=blind data=adapted_for_hysupp_Urban<k> model=DirVAE model.epochs=200 model.lr=0.001 model.reg_factor=0.001
+```
 
 
 ## Modifications
@@ -105,6 +114,9 @@ The results of the experiment can be found in the logs directory located at ```.
 - Config files:
   - config/data/adapted_for_hysupp_*.yaml with * = Samson, Urban4, Urban5, Urban6 have been added as part of the intregration
   - config/model/DirVAE.yaml has also been added for same reasons
+- ReadMe modifications:
+  - fixed an error in requirements.txt environment
+  - added info on Samson
 
 ## Data format
 
@@ -118,9 +130,3 @@ Datasets consist in a dedicated `.mat` file containing the following keys:
 * `p`: number of endmembers
 * `L`: number of channels
 * `N`: number of pixels (`N` == `H`*`W`)
-
-
-
-
-
-
